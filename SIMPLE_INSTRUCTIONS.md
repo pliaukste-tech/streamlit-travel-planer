@@ -33,6 +33,7 @@ Copy and paste this line:
   - Activities: Hiking, Cooking  
   - Days: 3
   - Detail: short or long
+  - Additional question (optional): "Tell me something important about the history of Italy"
 - Click "Generate My Travel Itinerary"
 
 ### 6. Stop the Chatbot

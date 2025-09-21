@@ -89,9 +89,18 @@ def get_user_inputs():
         else:
             print("Please enter either 'long' or 'short'.")
     
-    return country, activities, days, report_weight
+    # Get additional prompt (optional)
+    print()
+    print("💭 Optional: Ask something specific about your destination")
+    print("Examples:")
+    print("  - Tell me something important about the history of [country]")
+    print("  - What are the local customs I should know about?")
+    print("  - What's the best local cuisine to try?")
+    additional_prompt = input("Your question (press Enter to skip): ").strip()
+    
+    return country, activities, days, report_weight, additional_prompt
 
-def create_travel_prompt(country, activities, days, report_weight):
+def create_travel_prompt(country, activities, days, report_weight, additional_prompt=""):
     """Create a detailed prompt for the AI to generate travel itinerary."""
     
     detail_instruction = {
@@ -117,6 +126,17 @@ Please structure the itinerary as follows:
 6. **Best Time to Visit** - Weather and seasonal considerations
 
 Make the itinerary practical, engaging, and tailored to someone interested in {activities}.
+"""
+    
+    # Add additional prompt if provided
+    if additional_prompt and additional_prompt.strip():
+        prompt += f"""
+
+📝 **Additional Information Requested:**
+Please also include a dedicated section answering this specific question about {country}:
+"{additional_prompt}"
+
+Please provide comprehensive and interesting information for this additional request.
 """
     
     return prompt
@@ -178,10 +198,10 @@ def main():
     
     try:
         # Get user inputs
-        country, activities, days, report_weight = get_user_inputs()
+        country, activities, days, report_weight, additional_prompt = get_user_inputs()
         
         # Create prompt for AI
-        prompt = create_travel_prompt(country, activities, days, report_weight)
+        prompt = create_travel_prompt(country, activities, days, report_weight, additional_prompt)
         
         # Generate itinerary
         itinerary = generate_itinerary(client, prompt)
@@ -198,6 +218,12 @@ def main():
                     with open(filename, 'w', encoding='utf-8') as f:
                         f.write(f"Travel Itinerary for {country}\n")
                         f.write(f"Activities: {activities}\n")
+                        f.write(f"Duration: {days} days\n")
+                        f.write(f"Report Type: {report_weight}\n")
+                        if additional_prompt and additional_prompt.strip():
+                            f.write(f"Additional Question: {additional_prompt.strip()}\n")
+                        f.write("=" * 60 + "\n\n")
+                        f.write(itinerary)
                         f.write(f"Duration: {days} days\n")
                         f.write(f"Report Type: {report_weight}\n")
                         f.write("=" * 60 + "\n\n")

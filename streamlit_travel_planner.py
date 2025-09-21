@@ -24,7 +24,7 @@ def setup_client(api_key):
     except Exception as e:
         return None, f"Error initializing Google AI client: {e}"
 
-def create_travel_prompt(country, activities, days, report_weight):
+def create_travel_prompt(country, activities, days, report_weight, additional_prompt=""):
     """Create a detailed prompt for the AI to generate travel itinerary."""
     
     detail_instruction = {
@@ -32,6 +32,7 @@ def create_travel_prompt(country, activities, days, report_weight):
         'long': "Please provide a detailed itinerary with comprehensive information, including specific locations, timing, tips, and alternative options."
     }
     
+    # Base prompt for the itinerary
     prompt = f"""
 You are an expert travel planner. Create a {report_weight} travel itinerary for the following trip:
 
@@ -51,6 +52,17 @@ Please structure the itinerary as follows:
 
 Make the itinerary practical, engaging, and tailored to someone interested in {activities}.
 Format the response with proper markdown for better readability.
+"""
+    
+    # Add additional prompt if provided
+    if additional_prompt and additional_prompt.strip():
+        prompt += f"""
+
+📝 **Additional Information Requested:**
+Please also include a dedicated section answering this specific question about {country}:
+"{additional_prompt}"
+
+Please provide comprehensive and interesting information for this additional request.
 """
     
     return prompt
@@ -182,6 +194,15 @@ def main():
             help="Short: Key highlights only | Long: Detailed with comprehensive information"
         )
     
+    # Additional prompt section
+    st.markdown("### 💭 Additional Question (Optional)")
+    additional_prompt = st.text_area(
+        "❓ Ask something specific about your destination country",
+        placeholder="e.g., Tell me something important about the history of Italy\ne.g., What are the local customs I should know about?\ne.g., What's the best local cuisine to try?",
+        help="Ask any specific question about the country you're visiting. This will be included as an additional section in your itinerary.",
+        height=100
+    )
+    
     st.markdown('</div>', unsafe_allow_html=True)
     
     # Generate itinerary button
@@ -204,7 +225,7 @@ def main():
                 return
             
             # Create prompt
-            prompt = create_travel_prompt(country, activities, days, report_weight)
+            prompt = create_travel_prompt(country, activities, days, report_weight, additional_prompt)
             
             # Generate itinerary
             itinerary = generate_itinerary(client, prompt)
@@ -221,14 +242,19 @@ def main():
                 st.markdown(itinerary)
                 
                 # Download button
+                download_content = (f"Travel Itinerary for {country}\n" +
+                                  f"Activities: {activities}\n" +
+                                  f"Duration: {days} days\n" +
+                                  f"Report Type: {report_weight}\n")
+                
+                if additional_prompt and additional_prompt.strip():
+                    download_content += f"Additional Question: {additional_prompt.strip()}\n"
+                
+                download_content += "=" * 60 + "\n\n" + itinerary
+                
                 st.download_button(
                     label="📥 Download Itinerary",
-                    data=f"Travel Itinerary for {country}\n" +
-                         f"Activities: {activities}\n" +
-                         f"Duration: {days} days\n" +
-                         f"Report Type: {report_weight}\n" +
-                         "=" * 60 + "\n\n" +
-                         itinerary,
+                    data=download_content,
                     file_name=f"travel_itinerary_{country.lower().replace(' ', '_')}_{days}days.txt",
                     mime="text/plain"
                 )
@@ -252,7 +278,11 @@ def main():
                 st.markdown("### 🎯 Your Interests")
                 for activity in activities.split(','):
                     st.write(f"• {activity.strip()}")
-                    
+                
+                # Show additional prompt if provided
+                if additional_prompt and additional_prompt.strip():
+                    st.markdown("### ❓ Additional Question Asked")
+                    st.info(additional_prompt.strip())
         else:
             st.error(f"❌ {itinerary}")
             st.info("Please try again with a different input or check your API key.")

@@ -57,6 +57,7 @@ A user-friendly travel planning application that helps you create personalized i
    - **Activities**: What you enjoy (e.g., Hiking, Cooking)
    - **Days**: How many days for your trip (e.g., 3)
    - **Detail Level**: Short or Long itinerary
+   - **Additional Question**: Optional specific question (e.g., "Tell me something important about the history of Italy")
 5. Click "Generate My Travel Itinerary"
 6. Download your itinerary when ready!
 
@@ -75,6 +76,7 @@ A user-friendly travel planning application that helps you create personalized i
 - **Activities**: Hiking, Cooking, Art Museums
 - **Days**: 5
 - **Detail Level**: Long
+- **Additional Question**: "Tell me something important about the history of Italy"
 
 ### Output Example:
 The application will generate a comprehensive 5-day itinerary for Italy including:
@@ -84,6 +86,7 @@ The application will generate a comprehensive 5-day itinerary for Italy includin
 - Transportation tips
 - Budget estimates
 - Best time to visit advice
+- **Historical information about Italy** (answering the additional question)
 
 ## 🔧 Troubleshooting
 

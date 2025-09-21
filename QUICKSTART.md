@@ -8,8 +8,9 @@ This chatbot helps you plan travel itineraries by asking for:
 - **Activities you like** (e.g., Hiking, Cooking)
 - **Days to spend** (e.g., 3)
 - **Report length** (Long or Short)
+- **Additional question** (Optional, e.g., "Tell me something important about the history of Italy")
 
-You enter your Google AI Studio API key, and it creates a personalized travel plan!
+You enter your Google AI Studio API key, and it creates a personalized travel plan with answers to your specific questions!
 
 ---
 
@@ -51,6 +52,7 @@ streamlit run streamlit_travel_planner.py
    - Activities: Hiking, Cooking
    - Days: 3
    - Detail: short or long
+   - Additional question (optional): Tell me something important about the history of Italy
 4. Click "Generate My Travel Itinerary"
 5. Download your itinerary when ready!
 
